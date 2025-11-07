@@ -1,4 +1,5 @@
 import type {NextConfig} from 'next';
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -30,6 +31,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.plugins.push(new MonacoWebpackPlugin({
+        languages: ['json', 'xml'],
+        filename: 'static/[name].worker.js',
+        publicPath: '/_next/',
+      }));
+    }
+    return config;
+  }
 };
 
 export default nextConfig;

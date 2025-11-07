@@ -3,9 +3,7 @@
 import loader from "@monaco-editor/loader";
 
 if (typeof window !== "undefined") {
-  loader.config({
-    paths: {
-      vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs",
-    },
-  });
+  // This initializes the loader and points it to where the worker files are served.
+  // The webpack plugin in next.config.js handles copying the files.
+  loader.init();
 }

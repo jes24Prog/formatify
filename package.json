@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 9002",
+    "dev": "next dev --turbopack",
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
@@ -60,6 +60,7 @@
     "@types/prettier": "^3.0.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "monaco-editor-webpack-plugin": "^7.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
