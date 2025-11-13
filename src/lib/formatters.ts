@@ -2,6 +2,7 @@ import prettier from 'prettier/standalone';
 import * as prettierPluginBabel from 'prettier/plugins/babel';
 import * as prettierPluginEstree from 'prettier/plugins/estree';
 import xmlFormatter from 'xml-formatter';
+import YAML from 'yaml';
 
 export async function formatJson(code: string): Promise<string> {
   // Ensure the input is parsed as JSON, this also validates it.
@@ -22,4 +23,10 @@ export function formatXml(code: string): string {
     lineSeparator: '\n',
   });
   return formatted;
+}
+
+export function formatYaml(code: string): string {
+  // Parsing and re-stringifying with the library effectively formats it.
+  const doc = YAML.parse(code);
+  return YAML.stringify(doc);
 }

@@ -7,14 +7,14 @@ import { ArrowRightLeft, GitCompareArrows, ArrowLeft, Repeat } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { EditorPane, EditorType } from '@/components/editor-pane';
-import { formatJson, formatXml } from '@/lib/formatters';
-import { validateJson, validateXml } from '@/lib/validators';
+import { formatJson, formatXml, formatYaml } from '@/lib/formatters';
+import { validateJson, validateXml, validateYaml } from '@/lib/validators';
 import { Icons } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { MonacoDiffEditor } from './monaco-diff-editor';
-import { convertJsonToXml, convertXmlToJson } from '@/lib/converters';
+import { convertJsonToXml, convertXmlToJson, convertJsonToYaml, convertYamlToJson } from '@/lib/converters';
 
-type Language = 'json' | 'xml' | 'plaintext';
+type Language = 'json' | 'xml' | 'plaintext' | 'yaml';
 
 export function FormatZen() {
   const [leftCode, setLeftCode] = useState('');
@@ -61,6 +61,8 @@ export function FormatZen() {
         formatted = await formatJson(code);
       } else if (lang === 'xml') {
         formatted = formatXml(code);
+      } else if (lang === 'yaml') {
+        formatted = formatYaml(code);
       } else {
         toast({ title: 'Cannot format plaintext', variant: 'destructive' });
         return;
@@ -81,6 +83,8 @@ export function FormatZen() {
       result = validateJson(code);
     } else if (lang === 'xml') {
       result = validateXml(code);
+    } else if (lang === 'yaml') {
+      result = validateYaml(code);
     }
 
     if (result.isValid) {
@@ -108,10 +112,28 @@ export function FormatZen() {
         const xml = convertJsonToXml(leftCode);
         setRightCode(xml);
         toast({ title: "Converted JSON to XML" });
+      } else if (leftLang === 'json' && rightLang === 'yaml') {
+        const yaml = convertJsonToYaml(leftCode);
+        setRightCode(yaml);
+        toast({ title: "Converted JSON to YAML" });
+      } else if (leftLang === 'yaml' && rightLang === 'json') {
+        const json = convertYamlToJson(leftCode);
+        setRightCode(JSON.stringify(json, null, 2));
+        toast({ title: "Converted YAML to JSON" });
+      } else if (leftLang === 'xml' && rightLang === 'yaml') {
+        const json = convertXmlToJson(leftCode);
+        const yaml = convertJsonToYaml(JSON.stringify(json));
+        setRightCode(yaml);
+        toast({ title: "Converted XML to YAML" });
+      } else if (leftLang === 'yaml' && rightLang === 'xml') {
+        const json = convertYamlToJson(leftCode);
+        const xml = convertJsonToXml(JSON.stringify(json));
+        setRightCode(xml);
+        toast({ title: "Converted YAML to XML" });
       } else {
         toast({
           title: "Conversion not supported",
-          description: "Please set one pane to XML and the other to JSON.",
+          description: "Please set panes to compatible types (JSON, XML, YAML).",
           variant: "destructive",
         });
       }
@@ -134,8 +156,8 @@ export function FormatZen() {
     }
     if (leftLang === 'plaintext' || rightLang === 'plaintext') {
         toast({
-            title: "Cannot compare plain text",
-            description: "Please select JSON or XML for both panes to compare.",
+            title: "Cannot compare this file type",
+            description: "Please select JSON, XML or YAML for both panes to compare.",
             variant: "destructive",
         });
         return;

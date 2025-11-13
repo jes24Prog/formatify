@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.plugins.push(new MonacoWebpackPlugin({
-        languages: ['json', 'xml'],
+        languages: ['json', 'xml', 'yaml'],
         filename: 'static/[name].worker.js',
         publicPath: '/_next/',
       }));

@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 export type EditorType = 'left' | 'right';
-type Language = 'json' | 'xml' | 'plaintext';
+type Language = 'json' | 'xml' | 'plaintext' | 'yaml';
 
 interface EditorPaneProps {
   editorType: EditorType;
@@ -63,6 +63,7 @@ export function EditorPane({
         // Auto-detect language
         if (file.name.endsWith('.json')) onLanguageChange('json');
         else if (file.name.endsWith('.xml')) onLanguageChange('xml');
+        else if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) onLanguageChange('yaml');
       };
       reader.readAsText(file);
     }
@@ -108,6 +109,7 @@ export function EditorPane({
         onCodeChange(e.target?.result as string);
         if (file.name.endsWith('.json')) onLanguageChange('json');
         else if (file.name.endsWith('.xml')) onLanguageChange('xml');
+        else if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) onLanguageChange('yaml');
         toast({ title: "File loaded successfully!" });
       };
       reader.readAsText(file);
@@ -129,6 +131,7 @@ export function EditorPane({
             <SelectContent>
               <SelectItem value="json">JSON</SelectItem>
               <SelectItem value="xml">XML</SelectItem>
+              <SelectItem value="yaml">YAML</SelectItem>
               <SelectItem value="plaintext">Plain Text</SelectItem>
             </SelectContent>
           </Select>

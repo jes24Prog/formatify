@@ -1,5 +1,6 @@
 
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
+import YAML from 'yaml';
 
 export function convertXmlToJson(xml: string): object {
   const parser = new XMLParser();
@@ -17,4 +18,13 @@ export function convertJsonToXml(json: string): string {
   });
   const xmlContent = builder.build(jsonObj);
   return xmlContent;
+}
+
+export function convertJsonToYaml(json: string): string {
+  const jsonObj = JSON.parse(json);
+  return YAML.stringify(jsonObj);
+}
+
+export function convertYamlToJson(yaml: string): object {
+  return YAML.parse(yaml);
 }
