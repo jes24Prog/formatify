@@ -1,11 +1,49 @@
-import type {Metadata} from 'next';
-import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
-import '@/lib/monaco-loader';
+import type { Metadata, Viewport } from "next";
+import { Inter, Source_Code_Pro } from "next/font/google";
+
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const sourceCodePro = Source_Code_Pro({
+  subsets: ["latin"],
+  variable: "--font-code",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: 'Formatify',
-  description: 'Beautify, validate, and compare XML/JSON files with ease.',
+  title: {
+    default: "Formatify",
+    template: "%s | Formatify",
+  },
+  description:
+    "Beautify, validate, convert and compare JSON, XML and YAML files right in your browser.",
+  keywords: [
+    "json",
+    "xml",
+    "yaml",
+    "formatter",
+    "beautify",
+    "validator",
+    "converter",
+    "diff",
+  ],
+  applicationName: "Formatify",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f5f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#262935" },
+  ],
 };
 
 export default function RootLayout({
@@ -14,15 +52,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
-      </head>
+    <html
+      lang="en"
+      className={`${inter.variable} ${sourceCodePro.variable}`}
+      suppressHydrationWarning
+    >
       <body className="font-body antialiased">
-        {children}
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
